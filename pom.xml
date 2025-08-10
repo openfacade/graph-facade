@@ -10,6 +10,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>graph-facade-api</module>
+        <module>graph-facade-hugegraph</module>
     </modules>
 
     <properties>
