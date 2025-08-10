@@ -4,15 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>maven-group-id</groupId>
-    <artifactId>maven-artifact-id</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <groupId>io.github.openfacade</groupId>
+    <artifactId>graph-facade-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>graph-facade-api</module>
+    </modules>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <src.dir>src/main/java</src.dir>
+        <jacoco.overall.exec>${maven.multiModuleProjectDirectory}/target/jacoco/jacoco.exec</jacoco.overall.exec>
         <!-- dependency -->
         <jspecify.version>1.0.0</jspecify.version>
         <junit.version>5.13.2</junit.version>
@@ -62,16 +67,26 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <destFile>${jacoco.overall.exec}</destFile>
+                    <dataFile>${jacoco.overall.exec}</dataFile>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
+                        <configuration>
+                            <append>true</append>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>report</id>
-                        <phase>test</phase>
+                        <configuration>
+                            <excludes>**/META-INF/versions/**</excludes>
+                        </configuration>
+                        <phase>validate</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
@@ -218,24 +233,32 @@
         </plugins>
     </build>
 
-    <url>https://github.com/git-organization-name/git-repo-name</url>
+    <name>Graph Facade</name>
+    <description>A unified API and abstraction layer for graph storage.</description>
+    <url>https://github.com/openfacade/table-facade</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 
     <organization>
-        <name>git-organization-name</name>
-        <url>https://github.com/git-organization-name</url>
+        <name>openfacade</name>
+        <url>https://github.com/openfacade</url>
     </organization>
 
     <developers>
         <developer>
-            <name>author-name</name>
-            <email>author-email</email>
+            <name>hezhangjian</name>
+            <email>hezhangjian97@gmail.com</email>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git@github.com:git-organization-name/git-repo-name.git</connection>
-        <developerConnection>scm:git:git@github.com:git-organization-name/git-repo-name.git</developerConnection>
-        <url>git@github.com:git-organization-name/git-repo-name.git</url>
+        <connection>scm:git:git@github.com:openfacade/graph-facade.git</connection>
+        <developerConnection>scm:git:git@github.com:openfacade/graph-facade.git</developerConnection>
+        <url>git@github.com:openfacade/graph-facade.git</url>
         <tag>HEAD</tag>
     </scm>
 

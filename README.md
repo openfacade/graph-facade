@@ -1,14 +1,8 @@
-# project-name
+# Graph Facade
 
-Do whatever you want with this template, typically used to create a new project.
+![License](https://img.shields.io/badge/license-Apache2.0-green)
+![Language](https://img.shields.io/badge/language-Java-blue.svg)
+[![version](https://img.shields.io/github/v/tag/openfacade/graph-facade?label=release&color=blue)](https://github.com/openfacade/graph-facade/releases)
+[![codecov](https://codecov.io/gh/openfacade/graph-facade/branch/main/graph/badge.svg)](https://codecov.io/gh/openfacade/graph-facade)
 
-## Variables
-
-> globally replace the following variable(e.g., `git-repo-name`) with your project details using your editor's find-and-replace tool.
-
-- author-email: the email of the author
-- author-name: the name of the author
-- git-organization-name: the Git organization name
-- git-repo-name: the Git repository name
-- maven-artifact-id: the Maven artifact ID of the project
-- maven-group-id: the Maven group ID of the project
+**Graph Facade** is a unified API for working with graph storage.
