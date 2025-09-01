@@ -3,12 +3,15 @@ package io.github.openfacade.graph.hugegraph;
 import io.github.openfacade.graph.api.DataType;
 import io.github.openfacade.graph.api.GraphException;
 import io.github.openfacade.graph.api.GraphOperations;
+import io.github.openfacade.graph.schema.CreateNodeRequest;
+import io.github.openfacade.graph.schema.CreateNodeSchemaRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.hugegraph.driver.HugeClient;
 import org.apache.hugegraph.structure.graph.Vertex;
-import org.jspecify.annotations.NonNull;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static io.github.openfacade.graph.hugegraph.ConvertUtil.toHugeGraphDataType;
 
@@ -17,10 +20,20 @@ public class HugeGraphOperations implements GraphOperations {
     private final HugeClient hugeClient;
 
     @Override
-    public void createNode(@NonNull String nodeId, String nodeSchema) throws GraphException {
+    public void createNode(CreateNodeRequest createNodeRequest) throws GraphException {
+        String nodeId = createNodeRequest.getNodeId();
+        String nodeSchema = createNodeRequest.getNodeSchema();
+        Map<String, Object> properties = createNodeRequest.getProperties();
         try {
             Vertex vertex = new Vertex(nodeSchema);
             vertex.id(nodeId);
+
+            Set<String> schemaProperties = hugeClient.schema().getVertexLabel(nodeSchema).properties();
+            // check properties
+            checkNodeProperties(schemaProperties, properties);
+
+            // set properties
+            properties.forEach(vertex::property);
 
             // add vertex to graph
             hugeClient.graph().addVertex(vertex);
@@ -29,8 +42,21 @@ public class HugeGraphOperations implements GraphOperations {
         }
     }
 
+    private static void checkNodeProperties(Set<String> schemaProperties, Map<String, Object> properties) {
+        List<String> invalidProperties = properties.keySet()
+                .stream()
+                .filter(propertyName -> !schemaProperties.contains(propertyName))
+                .toList();
+
+        if (!invalidProperties.isEmpty()) {
+            throw new GraphException("invalid properties: [" + String.join(",", invalidProperties) + "]");
+        }
+    }
+
     @Override
-    public void createNodeSchema(String name, Map<String, DataType> propertyKeys) {
+    public void createNodeSchema(CreateNodeSchemaRequest createNodeSchemaRequest) {
+        String name = createNodeSchemaRequest.getName();
+        Map<String, DataType> propertyKeys = createNodeSchemaRequest.getPropertyKeys();
         try {
             if (checkVertexLabelExist(name)) {
                 return;
