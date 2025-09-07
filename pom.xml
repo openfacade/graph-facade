@@ -12,6 +12,7 @@
         <module>graph-facade-api</module>
         <module>graph-facade-hugegraph</module>
         <module>graph-facade-neo4j</module>
+        <module>graph-facade-nebulagraph</module>
     </modules>
 
     <properties>
