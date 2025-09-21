@@ -3,11 +3,14 @@ package io.github.openfacade.graph.hugegraph;
 import io.github.openfacade.graph.api.DataType;
 import io.github.openfacade.graph.api.GraphException;
 import io.github.openfacade.graph.api.GraphOperations;
+import io.github.openfacade.graph.schema.CreateEdgeRequest;
+import io.github.openfacade.graph.schema.CreateEdgeSchemaRequest;
 import io.github.openfacade.graph.schema.CreateNodeRequest;
 import io.github.openfacade.graph.schema.CreateNodeSchemaRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.hugegraph.driver.HugeClient;
 import org.apache.hugegraph.structure.graph.Vertex;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -86,6 +89,16 @@ public class HugeGraphOperations implements GraphOperations {
         } catch (Exception e) {
             throw new GraphException("Failed to create node schema for name: " + name, e);
         }
+    }
+
+    @Override
+    public void createEdge(@NonNull CreateEdgeRequest createEdgeRequest) throws GraphException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void createEdgeSchema(@NonNull CreateEdgeSchemaRequest createEdgeSchemaRequest) throws GraphException {
+        throw new UnsupportedOperationException();
     }
 
     private boolean checkVertexLabelExist(String name) {
