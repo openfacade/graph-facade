@@ -1,5 +1,5 @@
 # Graph Facade
-
+![color](images/fulllogo_nobuffer.png)
 ![License](https://img.shields.io/badge/license-Apache2.0-green)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/11020/badge)](https://www.bestpractices.dev/projects/11020)
 ![Language](https://img.shields.io/badge/language-Java-blue.svg)
