@@ -1,14 +1,17 @@
 package io.github.openfacade.graph.hugegraph;
 
 import io.github.openfacade.graph.api.DataType;
+import io.github.openfacade.graph.api.Edge;
 import io.github.openfacade.graph.api.GraphException;
 import io.github.openfacade.graph.api.GraphOperations;
+import io.github.openfacade.graph.api.Node;
 import io.github.openfacade.graph.schema.CreateEdgeRequest;
 import io.github.openfacade.graph.schema.CreateEdgeSchemaRequest;
 import io.github.openfacade.graph.schema.CreateNodeRequest;
 import io.github.openfacade.graph.schema.CreateNodeSchemaRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.hugegraph.driver.HugeClient;
+import org.apache.hugegraph.structure.graph.Edge;
 import org.apache.hugegraph.structure.graph.Vertex;
 import org.jspecify.annotations.NonNull;
 
@@ -99,6 +102,56 @@ public class HugeGraphOperations implements GraphOperations {
     @Override
     public void createEdgeSchema(@NonNull CreateEdgeSchemaRequest createEdgeSchemaRequest) throws GraphException {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node getNode(@NonNull String nodeId) throws GraphException {
+        try {
+            Vertex vertex = hugeClient.graph().getVertex(nodeId);
+            if (vertex == null) {
+                throw new GraphException("Node not found: " + nodeId);
+            }
+            
+            // Convert Vertex to Node
+            Node node = new Node();
+            node.setId(vertex.id().toString());
+            node.setSchema(vertex.label());
+            
+            // Set properties
+            Map<String, Object> properties = new java.util.HashMap<>();
+            vertex.properties().forEach((key, value) -> properties.put(key, value));
+            node.setProperties(properties);
+            
+            return node;
+        } catch (Exception e) {
+            throw new GraphException("Failed to get node: " + nodeId, e);
+        }
+    }
+
+    @Override
+    public Edge getEdge(@NonNull String edgeId) throws GraphException {
+        try {
+            Edge edge = hugeClient.graph().getEdge(edgeId);
+            if (edge == null) {
+                throw new GraphException("Edge not found: " + edgeId);
+            }
+            
+            // Convert Edge to Edge
+            io.github.openfacade.graph.api.Edge graphEdge = new io.github.openfacade.graph.api.Edge();
+            graphEdge.setId(edge.id().toString());
+            graphEdge.setSchema(edge.label());
+            graphEdge.setSourceId(edge.sourceId().toString());
+            graphEdge.setTargetId(edge.targetId().toString());
+            
+            // Set properties
+            Map<String, Object> properties = new java.util.HashMap<>();
+            edge.properties().forEach((key, value) -> properties.put(key, value));
+            graphEdge.setProperties(properties);
+            
+            return graphEdge;
+        } catch (Exception e) {
+            throw new GraphException("Failed to get edge: " + edgeId, e);
+        }
     }
 
     private boolean checkVertexLabelExist(String name) {
