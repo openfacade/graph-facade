@@ -1,7 +1,9 @@
 package io.github.openfacade.graph.neo4j;
 
+import io.github.openfacade.graph.api.Edge;
 import io.github.openfacade.graph.api.GraphException;
 import io.github.openfacade.graph.api.GraphOperations;
+import io.github.openfacade.graph.api.Node;
 import io.github.openfacade.graph.schema.CreateEdgeRequest;
 import io.github.openfacade.graph.schema.CreateEdgeSchemaRequest;
 import io.github.openfacade.graph.schema.CreateNodeRequest;
@@ -27,6 +29,16 @@ public class Neo4jGraphOperations implements GraphOperations {
 
     @Override
     public void createEdgeSchema(@NonNull CreateEdgeSchemaRequest createEdgeSchemaRequest) throws GraphException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Node getNode(@NonNull String nodeId) throws GraphException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Edge getEdge(@NonNull String edgeId) throws GraphException {
         throw new UnsupportedOperationException();
     }
 }
