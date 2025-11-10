@@ -190,6 +190,27 @@ public class HugeGraphOperations implements GraphOperations {
         }
     }
 
+    @Override
+    public void deleteNode(@NonNull String nodeId) throws GraphException {
+        try {
+            // Check if the node exists before attempting deletion
+            Vertex vertex = hugeClient.graph().getVertex(nodeId);
+            if (vertex == null) {
+                // Considered idempotent - return silently if node doesn't exist
+                return;
+            }
+
+            // In HugeGraph, removing a vertex automatically removes all its edges
+            // This is the default behavior, but we should make it explicit in the code comment
+            hugeClient.graph().removeVertex(nodeId);
+        } catch (GraphException e) {
+            // Re-throw our custom exceptions
+            throw e;
+        } catch (Exception e) {
+            throw new GraphException("Failed to delete node: " + nodeId, e);
+        }
+    }
+
     private boolean checkVertexLabelExist(String name) {
         try {
             hugeClient.schema().getVertexLabel(name);

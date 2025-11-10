@@ -15,4 +15,6 @@ public interface GraphOperations {
     void createEdge(@NonNull CreateEdgeRequest createEdgeRequest) throws GraphException;
 
     void createEdgeSchema(@NonNull CreateEdgeSchemaRequest createEdgeSchemaRequest)  throws GraphException;
+    
+    void deleteNode(@NonNull String nodeId) throws GraphException;
 }

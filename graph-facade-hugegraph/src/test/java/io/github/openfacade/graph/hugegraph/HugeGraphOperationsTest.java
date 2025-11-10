@@ -6,6 +6,7 @@ import io.github.openfacade.graph.schema.CreateEdgeRequest;
 import io.github.openfacade.graph.schema.CreateEdgeSchemaRequest;
 import io.github.openfacade.graph.schema.CreateNodeRequest;
 import io.github.openfacade.graph.schema.CreateNodeSchemaRequest;
+
 import org.apache.hugegraph.driver.HugeClient;
 import org.apache.hugegraph.structure.graph.Vertex;
 import org.junit.jupiter.api.AfterEach;
@@ -139,4 +140,69 @@ class HugeGraphOperationsTest {
         // This should not throw an exception
         operations.createEdge(edgeReq);
     }
+
+    @Test
+    void testDeleteNodeSuccess() throws GraphException {
+        // 1. Create a node schema
+        String nodeSchemaName = "delete_test_person";
+        CreateNodeSchemaRequest schemaReq = CreateNodeSchemaRequest.builder()
+                .name(nodeSchemaName)
+                .propertyKeys(Map.of(
+                        "name", DataType.TEXT,
+                        "email", DataType.TEXT))
+                .build();
+        operations.createNodeSchema(schemaReq);
+
+        // 2. Create a node
+        String nodeId = "test_user_to_delete";
+        Map<String, Object> properties = Map.of(
+                "name", "Test User",
+                "email", "test@example.com");
+
+        CreateNodeRequest createNodeRequest = CreateNodeRequest.builder()
+                .nodeId(nodeId)
+                .nodeSchema(nodeSchemaName)
+                .properties(properties)
+                .build();
+
+        operations.createNode(createNodeRequest);
+
+        // 3. Verify node exists
+        Vertex createdVertex = hugeClient.graph().getVertex(nodeId);
+        assertNotNull(createdVertex);
+        assertEquals(nodeSchemaName, createdVertex.label());
+
+        // 4. Delete the node
+        operations.deleteNode(nodeId);
+
+        // 5. Verify node is deleted (should return null or throw exception)
+        Vertex deletedVertex = hugeClient.graph().getVertex(nodeId);
+        assertNull(deletedVertex);
+    }
+
+    @Test
+    void testDeleteNonExistentNode() throws GraphException {
+        // 1. Create a node schema
+        String nodeSchemaName = "delete_test_schema";
+        CreateNodeSchemaRequest schemaReq = CreateNodeSchemaRequest.builder()
+                .name(nodeSchemaName)
+                .propertyKeys(Map.of("name", DataType.TEXT))
+                .build();
+        operations.createNodeSchema(schemaReq);
+
+        // 2. Try to delete a non-existent node
+        String nonExistentNodeId = "non_existent_node";
+
+        // 3. This should either succeed (idempotent delete) or throw an exception
+        // HugeGraph's behavior is to return null when getting non-existent vertices
+        // and not throw exception when deleting non-existent vertices
+        operations.deleteNode(nonExistentNodeId);
+
+        // Verify the node is not present
+        Vertex vertex = hugeClient.graph().getVertex(nonExistentNodeId);
+        assertNull(vertex);
+    }
+
+    // Note: The test for deleting node with non-existent schema has been removed
+    // as we no longer require schema information for node deletion
 }
